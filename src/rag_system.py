@@ -10,7 +10,7 @@ from sentence_transformers import SentenceTransformer, util
 import chromadb
 from chromadb.config import Settings
 from langchain_ollama import OllamaLLM
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 from chunking import parse_regulation_to_chunks, load_chunks_from_txt, save_chunks_to_txt
 
