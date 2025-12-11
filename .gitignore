@@ -1,0 +1,51 @@
+# Données
+data/*
+!data/.gitkeep
+*.txt
+*.pdf
+
+# ChromaDB
+chroma_db/
+
+# Modèles
+models/*
+!models/.gitkeep
+*.bin
+*.safetensors
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Docker
+.dockerignore
+
+# Environnement
+.env
+.env.local

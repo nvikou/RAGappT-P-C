@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Service Ollama pour le LLM
+  ollama:
+    image: ollama/ollama:latest
+    container_name: rag-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - rag-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Service de l'application RAG
+  rag-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: rag-gradio-app
+    ports:
+      - "7860:7860"
+    volumes:
+      - ../data:/app/data
+      - ../models:/app/models
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    depends_on:
+      - ollama
+    networks:
+      - rag-network
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo '🔄 Attente du démarrage d'Ollama...' &&
+        sleep 10 &&
+        echo '📥 Téléchargement du modèle llama3.2...' &&
+        curl http://ollama:11434/api/pull -d '{\"name\":\"llama3.2:latest\"}' &&
+        echo '✅ Modèle téléchargé, démarrage de l'application...' &&
+        python src/app.py --host 0.0.0.0 --port 7860
+      "
+
+volumes:
+  ollama_data:
+    driver: local
+
+networks:
+  rag-network:
+    driver: bridge
